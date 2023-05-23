@@ -28,6 +28,7 @@ const naverCrawler = new Crawler('https://recruit.naverlabs.com/', 'li > a > h4'
 app.get('/recruit/info', async (req, res) => {
   const titleList = await naverCrawler.crawl();
   res.json(titleList);
+  console.log(titleList);
 });
 
 
