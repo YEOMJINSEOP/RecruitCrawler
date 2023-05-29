@@ -23,3 +23,25 @@ export async function connectDB() {
     console.error(error);
   }
 }
+
+// Event listeners for shutdown signals
+process.on('SIGINT', async () => {
+  console.log('SIGINT received');
+  if (client && client.isConnected()) {
+    await client.close();
+  }
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  console.log('SIGTERM received');
+  if (client && client.isConnected()) {
+    await client.close();
+  }
+  process.exit(0);
+});
+
+
+
+
+
