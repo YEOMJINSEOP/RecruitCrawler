@@ -32,7 +32,7 @@ const lineCrawler = new Crawler('https://careers.linecorp.com/jobs?ca=All&ci=Seo
 app.get('/recruit/info', async (req, res) => {
   const crawlers = [naverCrawler, lineCrawler];
   const recruitLists = await Promise.all(crawlers.map(crawler => crawler.crawl()));
-  res.json(recruitLists.flat());
+  res.json(recruitLists);
 
 
   // const titleList = await kakaoCrawler.crawl();

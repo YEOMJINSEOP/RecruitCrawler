@@ -13,6 +13,7 @@ class Crawler {
 
   async crawl() {
     const response = await axios.get(this.url).catch(console.error);
+    console.log('response: ', response.data);
     const $ = cheerio.load(response.data);
     const results = [];
     $(this.selector).each((index, element) => {
@@ -25,14 +26,13 @@ class Crawler {
   }
 }
 
-const naverCrawler = new Crawler('https://recruit.naverlabs.com/', 'li > a > h4', 'NAVER');
+const naverLabsCrawler = new Crawler('https://recruit.naverlabs.com/', 'li > a > h4', 'NAVER LABS');
 
-const lineCrawler = new Crawler('https://careers.linecorp.com/jobs?ca=All&ci=Seoul,Bundang&co=East%20Asia&fi=Client-side,Android,iOS,Web%20Development,Server-side,Cloud%2FInfra,System%20Engineering,Data%2FAI,QA,Security%20Engineering', 'li > a > h3 ', 'LINE');
+const kakaoCrawler = new Crawler('https://careers.kakao.com/jobs', 'li', 'KAKAO');
 
 app.get('/recruit/info', async (req, res) => {
-  const crawlers = [naverCrawler, lineCrawler];
-  const recruitLists = await Promise.all(crawlers.map(crawler => crawler.crawl()));
-  res.json(recruitLists.flat());
+  const titleList = await naverLabsCrawler.crawl();
+  res.json(titleList);
 
 
   // const titleList = await kakaoCrawler.crawl();
