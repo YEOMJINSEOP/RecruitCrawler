@@ -5,10 +5,9 @@ import cheerio from 'cheerio';
 const app = express();
 
 class Crawler {
-  constructor(url, selector, company) {
+  constructor(url, selector) {
     this.url = url;
     this.selector = selector;
-    this.company = company;
   }
 
   async crawl() {
@@ -16,16 +15,13 @@ class Crawler {
     const $ = cheerio.load(response.data);
     const results = [];
     $(this.selector).each((index, element) => {
-      results[index] = {
-        company: this.company,
-        data: $(element).text()
-      };
+      results[index] = $(element).text();
     });
     return results;
   }
 }
 
-const naverLabsCrawler = new Crawler('https://recruit.naverlabs.com/', 'li > a > h4', 'NAVER LABS');
+const naverLabsCrawler = new Crawler('https://recruit.naverlabs.com/', 'li > a > h4');
 
 app.get('/recruit/info', async (req, res) => {
   const titleList = await naverLabsCrawler.crawl();

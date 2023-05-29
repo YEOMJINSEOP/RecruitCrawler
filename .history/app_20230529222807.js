@@ -21,11 +21,12 @@ class Crawler {
         data: $(element).text()
       };
     });
+    console.log(results);
     return results;
   }
 }
 
-const naverLabsCrawler = new Crawler('https://recruit.naverlabs.com/', 'li > a > h4', 'NAVER LABS');
+const naverLabsCrawler = new Crawler('https://recruit.naverlabs.com/', 'li > a > h4');
 
 app.get('/recruit/info', async (req, res) => {
   const titleList = await naverLabsCrawler.crawl();
