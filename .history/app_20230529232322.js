@@ -1,6 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import cheerio from 'cheerio';
+import dotenv from "dotenv";
 import {connectDB} from './database/database.js';
 
 const app = express();
@@ -33,17 +34,8 @@ const lineCrawler = new Crawler('https://careers.linecorp.com/jobs?ca=All&ci=Seo
 app.get('/recruit/info', async (req, res) => {
   const crawlers = [naverCrawler, lineCrawler];
   const recruitLists = await Promise.all(crawlers.map(crawler => crawler.crawl()));
-
-  const db = await connectDB();
-  const collection = db.collection('recruits');
-
-  recruitLists.flat().forEach(async recruit => {
-    await collection.insertOne(recruit);
-  })
-  
   res.json(recruitLists.flat());
 });
 
 
 app.listen(8080);
-

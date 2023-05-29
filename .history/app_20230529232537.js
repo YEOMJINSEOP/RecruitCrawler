@@ -33,17 +33,28 @@ const lineCrawler = new Crawler('https://careers.linecorp.com/jobs?ca=All&ci=Seo
 app.get('/recruit/info', async (req, res) => {
   const crawlers = [naverCrawler, lineCrawler];
   const recruitLists = await Promise.all(crawlers.map(crawler => crawler.crawl()));
-
-  const db = await connectDB();
-  const collection = db.collection('recruits');
-
-  recruitLists.flat().forEach(async recruit => {
-    await collection.insertOne(recruit);
-  })
-  
   res.json(recruitLists.flat());
 });
+
+connectDB();
 
 
 app.listen(8080);
 
+
+process.on('SIGTERM', shutDown);
+process.on('SIGINT', shutDown);
+
+function shutDown() {
+  console.log('Received kill signal, shutting down gracefully');
+  server.close(() => {
+    console.log('Closed out remaining connections');
+    process.exit(0);
+  });
+
+  // 10초 후 강제 종료
+  setTimeout(() => {
+    console.error('Could not close connections in time, forcefully shutting down');
+    process.exit(1);
+  }, 10000);
+}

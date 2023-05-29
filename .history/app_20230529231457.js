@@ -1,11 +1,10 @@
 import express from 'express';
 import axios from 'axios';
 import cheerio from 'cheerio';
-import {connectDB} from './database/database.js';
+import {connectDB} from './database/database';
 
 const app = express();
 
-// console.log(process.env.DB_HOST);
 class Crawler {
   constructor(url, selector, company) {
     this.url = url;
@@ -33,17 +32,13 @@ const lineCrawler = new Crawler('https://careers.linecorp.com/jobs?ca=All&ci=Seo
 app.get('/recruit/info', async (req, res) => {
   const crawlers = [naverCrawler, lineCrawler];
   const recruitLists = await Promise.all(crawlers.map(crawler => crawler.crawl()));
-
-  const db = await connectDB();
-  const collection = db.collection('recruits');
-
-  recruitLists.flat().forEach(async recruit => {
-    await collection.insertOne(recruit);
-  })
-  
   res.json(recruitLists.flat());
+
+
+  // const titleList = await kakaoCrawler.crawl();
+  // res.json(titleList);
 });
 
+connectDB();
 
 app.listen(8080);
-
