@@ -2,9 +2,9 @@ import express from 'express';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import {connectDB} from './database/database.js';
-
+import cors from 'cors';
 const app = express();
-
+app.use(cors());
 // console.log(process.env.DB_HOST);
 class Crawler {
   constructor(url, selector, company) {
